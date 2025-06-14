@@ -12,7 +12,7 @@ end
 
 -- Main ScreenGUI
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "TargetHub"
+ScreenGui.Name = "T"
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = gui
 
@@ -93,7 +93,7 @@ Icon.Name = "Icon"
 Icon.Size = UDim2.new(0, 30, 0, 30)
 Icon.Position = UDim2.new(0, 10, 0.5, -15)
 Icon.BackgroundTransparency = 1
-Icon.Image = "rbxassetid://7072717772" -- Target icon
+Icon.Image = "rbxassetid://13852954720" -- Target icon
 Icon.Parent = TitleBar
 
 local Title = Instance.new("TextLabel")
@@ -362,10 +362,22 @@ local OfficialScripts = {
 		Description = "Troll Hub for trolling r15 only"
 	},
 	{
+		Name = "Dead rails script OP AUTO BOND FARM",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/m00ndiety/Keyless-auto-bonds/refs/heads/main/obfuscated%20(6).txt'))()",
+		Description = "This Auto Bonds Script gives you 80+ bonds per run — fully automated and keyless!"
+	},
+	{
 		Name = "Ro Ghoul",
 		Category = "Games",
 		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/PorryDepTrai/exploit/main/DashBoostSolora.lua'))()",
 		Description = "Script for Ro ghoul"
+	},
+	{
+		Name = "Forge Hub",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Skzuppy/forge-hub/main/loader.lua'))()",
+		Description = "10+ GAMES, OP FEATURES, AUTOFARMS AND LOTS MORE!"
 	},
 	{
 		Name = "Arsenal",
@@ -563,4 +575,3 @@ TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back), {Size 
 -- Show all scripts by default
 task.wait(0.5)
 DisplayScripts("All")
-
