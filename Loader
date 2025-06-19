@@ -352,7 +352,7 @@ local OfficialScripts = {
 	{
 		Name = "No Lag Hub",
 		Category = "Games",
-		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/TargetLoader/Loader/refs/heads/main/No%20Lag%20Hub'))()",
+		Loadstring = "loadstring(game:HttpGet("https://raw.githubusercontent.com/NukeVsCityLoader/NoLag/refs/heads/main/NoLagHub"))()",
 		Description = "Advanced game hub"
 	},
 	{
