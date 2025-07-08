@@ -1,0 +1,284 @@
+task.spawn(function()
+	-- Main GUI
+	local ScreenGui = Instance.new("ScreenGui")
+	ScreenGui.Name = "SpaceKeySystem"
+	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	ScreenGui.ResetOnSpawn = false
+	ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+	-- Main Frame
+	local Frame = Instance.new("Frame")
+	Frame.Name = "MainFrame"
+	Frame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	Frame.BorderSizePixel = 0
+	Frame.Position = UDim2.new(0.35, 0, 0.3, 0)
+	Frame.Size = UDim2.new(0, 400, 0, 250)
+	Frame.Parent = ScreenGui
+
+	-- Space-themed gradient
+	local UIGradient = Instance.new("UIGradient")
+	UIGradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 0, 0)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 0, 10))
+	})
+	UIGradient.Rotation = 45
+	UIGradient.Parent = Frame
+
+	-- Corner for smooth edges
+	local UICorner = Instance.new("UICorner")
+	UICorner.CornerRadius = UDim.new(0, 6)
+	UICorner.Parent = Frame
+
+	-- Glowing border effect
+	local Glow = Instance.new("ImageLabel")
+	Glow.Name = "Glow"
+	Glow.BackgroundTransparency = 1
+	Glow.Size = UDim2.new(1, 12, 1, 12)
+	Glow.Position = UDim2.new(0, -6, 0, -6)
+	Glow.Image = "rbxassetid://5028857084"
+	Glow.ImageColor3 = Color3.fromRGB(255, 0, 0)
+	Glow.ScaleType = Enum.ScaleType.Slice
+	Glow.SliceCenter = Rect.new(24, 24, 24, 24)
+	Glow.Parent = Frame
+
+	-- Topbar
+	local Topbar = Instance.new("Frame")
+	Topbar.Name = "Topbar"
+	Topbar.BackgroundColor3 = Color3.fromRGB(20, 0, 0)
+	Topbar.BorderSizePixel = 0
+	Topbar.Size = UDim2.new(1, 0, 0, 30)
+	Topbar.Parent = Frame
+
+	local TopbarCorner = Instance.new("UICorner")
+	TopbarCorner.CornerRadius = UDim.new(0, 6)
+	TopbarCorner.Parent = Topbar
+
+	-- Title with space theme
+	local Title = Instance.new("TextLabel")
+	Title.Name = "Title"
+	Title.BackgroundTransparency = 1
+	Title.Position = UDim2.new(0, 10, 0, 0)
+	Title.Size = UDim2.new(0, 200, 1, 0)
+	Title.Font = Enum.Font.SciFi
+	Title.Text = "TARGET KEY SYSTEM"
+	Title.TextColor3 = Color3.fromRGB(255, 40, 40)
+	Title.TextSize = 14
+	Title.TextXAlignment = Enum.TextXAlignment.Left
+	Title.Parent = Topbar
+
+	-- Stars decoration
+	local Stars = Instance.new("ImageLabel")
+	Stars.Name = "Stars"
+	Stars.BackgroundTransparency = 1
+	Stars.Size = UDim2.new(1, 0, 1, 0)
+	Stars.Image = "rbxassetid://13764359230" -- Replace with your star texture
+	Stars.ImageTransparency = 0.8
+	Stars.Parent = Frame
+
+	-- Close Button
+	local Exit = Instance.new("TextButton")
+	Exit.Name = "Exit"
+	Exit.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	Exit.BorderSizePixel = 0
+	Exit.Position = UDim2.new(1, -30, 0, 5)
+	Exit.Size = UDim2.new(0, 20, 0, 20)
+	Exit.Font = Enum.Font.SciFi
+	Exit.Text = "X"
+	Exit.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Exit.TextSize = 14
+	Exit.Parent = Topbar
+
+	local ExitCorner = Instance.new("UICorner")
+	ExitCorner.CornerRadius = UDim.new(0, 4)
+	ExitCorner.Parent = Exit
+
+	-- Minimize Button
+	local minimize = Instance.new("TextButton")
+	minimize.Name = "minimize"
+	minimize.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+	minimize.BorderSizePixel = 0
+	minimize.Position = UDim2.new(1, -60, 0, 5)
+	minimize.Size = UDim2.new(0, 20, 0, 20)
+	minimize.Font = Enum.Font.SciFi
+	minimize.Text = "-"
+	minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+	minimize.TextSize = 14
+	minimize.Parent = Topbar
+
+	local MinimizeCorner = Instance.new("UICorner")
+	MinimizeCorner.CornerRadius = UDim.new(0, 4)
+	MinimizeCorner.Parent = minimize
+
+	-- Content Frame
+	local Frame_2 = Instance.new("Frame")
+	Frame_2.Name = "ContentFrame"
+	Frame_2.BackgroundTransparency = 1
+	Frame_2.Position = UDim2.new(0, 0, 0, 35)
+	Frame_2.Size = UDim2.new(1, 0, 1, -35)
+	Frame_2.Parent = Frame
+
+	-- Key Input Box
+	local TextBox = Instance.new("TextBox")
+	TextBox.Name = "KeyInput"
+	TextBox.BackgroundColor3 = Color3.fromRGB(20, 0, 0)
+	TextBox.BackgroundTransparency = 0.7
+	TextBox.BorderSizePixel = 0
+	TextBox.Position = UDim2.new(0.1, 0, 0.1, 0)
+	TextBox.Size = UDim2.new(0.8, 0, 0, 40)
+	TextBox.Font = Enum.Font.SciFi
+	TextBox.PlaceholderText = "ENTER SPACE KEY..."
+	TextBox.PlaceholderColor3 = Color3.fromRGB(150, 50, 50)
+	TextBox.Text = ""
+	TextBox.TextColor3 = Color3.fromRGB(255, 100, 100)
+	TextBox.TextSize = 14
+	TextBox.Parent = Frame_2
+
+	local TextBoxCorner = Instance.new("UICorner")
+	TextBoxCorner.CornerRadius = UDim.new(0, 4)
+	TextBoxCorner.Parent = TextBox
+
+	local TextBoxPadding = Instance.new("UIPadding")
+	TextBoxPadding.PaddingLeft = UDim.new(0, 10)
+	TextBoxPadding.PaddingRight = UDim.new(0, 10)
+	TextBoxPadding.Parent = TextBox
+
+	-- Get Key Button
+	local Getkey = Instance.new("TextButton")
+	Getkey.Name = "Getkey"
+	Getkey.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+	Getkey.BorderSizePixel = 0
+	Getkey.Position = UDim2.new(0.1, 0, 0.4, 0)
+	Getkey.Size = UDim2.new(0.8, 0, 0, 35)
+	Getkey.Font = Enum.Font.SciFi
+	Getkey.Text = "GET KEY LINK"
+	Getkey.TextColor3 = Color3.fromRGB(255, 150, 150)
+	Getkey.TextSize = 14
+	Getkey.Parent = Frame_2
+
+	local GetkeyCorner = Instance.new("UICorner")
+	GetkeyCorner.CornerRadius = UDim.new(0, 4)
+	GetkeyCorner.Parent = Getkey
+
+	-- Check Key Button
+	local Checkkey = Instance.new("TextButton")
+	Checkkey.Name = "Checkkey"
+	Checkkey.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	Checkkey.BorderSizePixel = 0
+	Checkkey.Position = UDim2.new(0.1, 0, 0.6, 0)
+	Checkkey.Size = UDim2.new(0.8, 0, 0, 35)
+	Checkkey.Font = Enum.Font.SciFi
+	Checkkey.Text = "CHECK KEY"
+	Checkkey.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Checkkey.TextSize = 14
+	Checkkey.Parent = Frame_2
+
+	local CheckkeyCorner = Instance.new("UICorner")
+	CheckkeyCorner.CornerRadius = UDim.new(0, 4)
+	CheckkeyCorner.Parent = Checkkey
+
+	-- Status Label (hidden by default)
+	local StatusLabel = Instance.new("TextLabel")
+	StatusLabel.Name = "StatusLabel"
+	StatusLabel.BackgroundTransparency = 1
+	StatusLabel.Position = UDim2.new(0.1, 0, 0.8, 0)
+	StatusLabel.Size = UDim2.new(0.8, 0, 0, 20)
+	StatusLabel.Font = Enum.Font.SciFi
+	StatusLabel.Text = ""
+	StatusLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
+	StatusLabel.TextSize = 12
+	StatusLabel.Visible = false
+	StatusLabel.Parent = Frame_2
+
+	-- Draggable functionality
+	local UserInputService = game:GetService("UserInputService")
+	local dragging
+	local dragInput
+	local dragStart
+	local startPos
+
+	local function update(input)
+		local delta = input.Position - dragStart
+		Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+
+	Topbar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = Frame.Position
+
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+
+	Topbar.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
+		end
+	end)
+
+	-- Button functions
+	local function showStatus(message, color)
+		StatusLabel.Text = message
+		StatusLabel.TextColor3 = color or Color3.fromRGB(255, 50, 50)
+		StatusLabel.Visible = true
+		task.delay(3, function()
+			StatusLabel.Visible = false
+		end)
+	end
+
+	Exit.MouseButton1Down:Connect(function()
+		ScreenGui:Destroy()
+	end)
+
+	minimize.MouseButton1Down:Connect(function()
+		Frame.Visible = not Frame.Visible
+	end)
+
+	Getkey.MouseButton1Down:Connect(function()
+		setclipboard("https://rinku.pro/TargetKey")
+		showStatus("Key link copied to clipboard!", Color3.fromRGB(0, 255, 0))
+	end)
+
+	Checkkey.MouseButton1Down:Connect(function()
+		if TextBox.Text == "" then
+			showStatus("Please enter a key first", Color3.fromRGB(255, 50, 50))
+			return
+		end
+
+		if TextBox.Text == "Key-26blovelsihhlao" then
+			showStatus("KEY ACCEPTED - WELCOME!", Color3.fromRGB(0, 255, 0))
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/TargetHubLoader/TargetLoader/refs/heads/main/TargetHub", true))()
+		else
+			showStatus("INCORRECT KEY - TRY AGAIN", Color3.fromRGB(255, 50, 50))
+		end
+	end)
+
+	-- Hover effects for buttons
+	local function setupButtonHover(button)
+		local originalColor = button.BackgroundColor3
+
+		button.MouseEnter:Connect(function()
+			button.BackgroundColor3 = originalColor * 1.5
+		end)
+
+		button.MouseLeave:Connect(function()
+			button.BackgroundColor3 = originalColor
+		end)
+	end
+
+	setupButtonHover(Exit)
+	setupButtonHover(minimize)
+	setupButtonHover(Getkey)
+	setupButtonHover(Checkkey)
+end)
