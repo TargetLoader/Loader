@@ -38,7 +38,7 @@ local function createEmbed()
         color = 65280, -- Green
         fields = {
             {
-                name = "👤 Executor Name:",
+                name = "👤 Player Name:",
                 value = "```" .. LocalPlayer.Name .. "```",
                 inline = true
             },
