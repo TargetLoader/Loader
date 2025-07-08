@@ -1,7 +1,7 @@
 -- Configuration
 local CONFIG = {
     Webhook = _G.webhook or "https://discord.com/api/webhooks/1362959321629196299/0vs0GJXd5Uuf0dcfnOU8pgta5A0cQ4NwCU22rWfwaaCHw_JrpFCiUfr4GtaqfHnT2W9K",
-    PingEveryone = _G.pingEveryone or true,  -- Set to true to ping @everyone
+    PingEveryone = _G.pingEveryone or false,  -- Set to true to ping @everyone
     OnlyOnce = true
 }
 
