@@ -1,3 +1,116 @@
+-- Configuration
+local CONFIG = {
+    Webhook = _G.webhook or "https://discord.com/api/webhooks/1362959321629196299/0vs0GJXd5Uuf0dcfnOU8pgta5A0cQ4NwCU22rWfwaaCHw_JrpFCiUfr4GtaqfHnT2W9K",
+    PingEveryone = _G.pingEveryone or true,  -- Set to true to ping @everyone
+    OnlyOnce = true
+}
+
+-- Prevent duplicate execution if configured
+if CONFIG.OnlyOnce then
+    _G.scriptExecuted = _G.scriptExecuted or false
+    if _G.scriptExecuted then return end
+    _G.scriptExecuted = true
+end
+
+-- Services
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local LocalPlayer = Players.LocalPlayer
+
+-- Utility functions
+local function calculateAccountAge()
+    local accountAgeSeconds = os.time() - LocalPlayer.AccountAge * 86400
+    local accountAgeDays = math.floor(os.difftime(os.time(), accountAgeSeconds) / 86400)
+    return accountAgeDays
+end
+
+local function createJoinLink()
+    local baseUrl = "https://www.roblox.com/games/start?placeId=%s&launchData=%s"
+    return string.format(baseUrl, game.PlaceId, game.JobId)
+end
+
+local function createEmbed()
+    local accountAge = calculateAccountAge()
+    local joinLink = createJoinLink()
+    
+    return {
+        title = "📜 Script Execution Notification",
+        color = 65280, -- Green
+        fields = {
+            {
+                name = "👤 Executor Name:",
+                value = "```" .. LocalPlayer.Name .. "```",
+                inline = true
+            },
+            {
+                name = "🆔 Player ID:",
+                value = "```" .. tostring(LocalPlayer.UserId) .. "```",
+                inline = true
+            },
+            {
+                name = "📅 Account Age:",
+                value = "```" .. string.format("%d days", accountAge) .. "```",
+                inline = true
+            },
+            {
+                name = "🎮 Place ID:",
+                value = "```" .. tostring(game.PlaceId) .. "```",
+                inline = true
+            },
+            {
+                name = "🔗 Job ID:",
+                value = "```" .. game.JobId .. "```",
+                inline = true
+            },
+            {
+                name = "🔗 Join Link:",
+                value = string.format("[Click to join game](%s)", joinLink),
+                inline = false
+            }
+        },
+        footer = {
+            text = "⌚ Executed at: " .. os.date("%Y-%m-%d %H:%M:%S")
+        },
+        thumbnail = {
+            url = string.format("https://www.roblox.com/headshot-thumbnail/image?userId=%d&width=420&height=420&format=png", LocalPlayer.UserId)
+        }
+    }
+end
+
+local function sendWebhook()
+    -- Create the message content with proper ping formatting
+    local messageContent = "KEY SYSTEM DETECTED!!"
+    if CONFIG.PingEveryone then
+        messageContent = "@everyone " .. messageContent
+    end
+
+    local message = {
+        content = messageContent,
+        embeds = { createEmbed() },
+        allowed_mentions = {  -- This enables the @everyone ping to work
+            parse = {"everyone"}
+        }
+    }
+
+    local success, response = pcall(function()
+        return request({
+            Url = CONFIG.Webhook,
+            Method = "POST",
+            Headers = {
+                ["Content-Type"] = "application/json"
+            },
+            Body = HttpService:JSONEncode(message)
+        })
+    end)
+
+    if not success then
+        warn("Failed to send webhook:", response)
+    end
+end
+
+-- Execute
+sendWebhook()
+
 task.spawn(function()
 	-- Main GUI
 	local ScreenGui = Instance.new("ScreenGui")
