@@ -1,7 +1,7 @@
 -- Configuration
 local CONFIG = {
     Webhook = _G.webhook or "https://discord.com/api/webhooks/1362959321629196299/0vs0GJXd5Uuf0dcfnOU8pgta5A0cQ4NwCU22rWfwaaCHw_JrpFCiUfr4GtaqfHnT2W9K",
-    PingEveryone = _G.pingEveryone or true,  -- Set to true to ping @everyone
+    PingEveryone = _G.pingEveryone or false,
     OnlyOnce = true
 }
 
@@ -73,18 +73,9 @@ local function createEmbed()
 end
 
 local function sendWebhook()
-    -- Create the message content with proper ping formatting
-    local messageContent = "KEY SYSTEM DETECTED!!"
-    if CONFIG.PingEveryone then
-        messageContent = "@everyone " .. messageContent
-    end
-
     local message = {
-        content = messageContent,
-        embeds = { createEmbed() },
-        allowed_mentions = {  -- This enables the @everyone ping to work
-            parse = {"everyone"}
-        }
+        content = CONFIG.PingEveryone and "@everyone Script execution detected!" or "Script execution detected!",
+        embeds = { createEmbed() }
     }
 
     local success, response = pcall(function()
@@ -106,287 +97,576 @@ end
 -- Execute
 sendWebhook()
 
-task.spawn(function()
-	-- Main GUI
-	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Name = "SpaceKeySystem"
-	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	ScreenGui.ResetOnSpawn = false
-	ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-	-- Main Frame
-	local Frame = Instance.new("Frame")
-	Frame.Name = "MainFrame"
-	Frame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-	Frame.BorderSizePixel = 0
-	Frame.Position = UDim2.new(0.35, 0, 0.3, 0)
-	Frame.Size = UDim2.new(0, 400, 0, 250)
-	Frame.Parent = ScreenGui
 
-	-- Space-themed gradient
-	local UIGradient = Instance.new("UIGradient")
-	UIGradient.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 0, 0)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 0, 10))
-	})
-	UIGradient.Rotation = 45
-	UIGradient.Parent = Frame
+-- Target Hub UI with Execution, Draggable, and Animations
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
-	-- Corner for smooth edges
-	local UICorner = Instance.new("UICorner")
-	UICorner.CornerRadius = UDim.new(0, 6)
-	UICorner.Parent = Frame
+local player = Players.LocalPlayer
+local gui = player:WaitForChild("PlayerGui")
 
-	-- Glowing border effect
-	local Glow = Instance.new("ImageLabel")
-	Glow.Name = "Glow"
-	Glow.BackgroundTransparency = 1
-	Glow.Size = UDim2.new(1, 12, 1, 12)
-	Glow.Position = UDim2.new(0, -6, 0, -6)
-	Glow.Image = "rbxassetid://5028857084"
-	Glow.ImageColor3 = Color3.fromRGB(255, 0, 0)
-	Glow.ScaleType = Enum.ScaleType.Slice
-	Glow.SliceCenter = Rect.new(24, 24, 24, 24)
-	Glow.Parent = Frame
+local function CenterFrame(frame)
+	frame.Position = UDim2.new(0.5, -frame.Size.X.Offset/2, 0.5, -frame.Size.Y.Offset/2)
+end
 
-	-- Topbar
-	local Topbar = Instance.new("Frame")
-	Topbar.Name = "Topbar"
-	Topbar.BackgroundColor3 = Color3.fromRGB(20, 0, 0)
-	Topbar.BorderSizePixel = 0
-	Topbar.Size = UDim2.new(1, 0, 0, 30)
-	Topbar.Parent = Frame
+-- Main ScreenGUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "T"
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = gui
 
-	local TopbarCorner = Instance.new("UICorner")
-	TopbarCorner.CornerRadius = UDim.new(0, 6)
-	TopbarCorner.Parent = Topbar
+-- Main Frame with gradient and shadow
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 500, 0, 600)
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.Parent = ScreenGui
 
-	-- Title with space theme
-	local Title = Instance.new("TextLabel")
-	Title.Name = "Title"
-	Title.BackgroundTransparency = 1
-	Title.Position = UDim2.new(0, 10, 0, 0)
-	Title.Size = UDim2.new(0, 200, 1, 0)
-	Title.Font = Enum.Font.SciFi
-	Title.Text = "TARGET KEY SYSTEM"
-	Title.TextColor3 = Color3.fromRGB(255, 40, 40)
-	Title.TextSize = 14
-	Title.TextXAlignment = Enum.TextXAlignment.Left
-	Title.Parent = Topbar
+-- Add gradient effect
+local Gradient = Instance.new("UIGradient")
+Gradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 20)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 10, 10))
+})
+Gradient.Rotation = 45
+Gradient.Parent = MainFrame
 
-	-- Stars decoration
-	local Stars = Instance.new("ImageLabel")
-	Stars.Name = "Stars"
-	Stars.BackgroundTransparency = 1
-	Stars.Size = UDim2.new(1, 0, 1, 0)
-	Stars.Image = "rbxassetid://13764359230" -- Replace with your star texture
-	Stars.ImageTransparency = 0.8
-	Stars.Parent = Frame
+-- Add shadow effect
+local Shadow = Instance.new("ImageLabel")
+Shadow.Name = "Shadow"
+Shadow.Size = UDim2.new(1, 20, 1, 20) -- Increased size for more diffusion
+Shadow.Position = UDim2.new(0, -10, 0, -10) -- Adjusted position for new size
+Shadow.BackgroundTransparency = 1
+Shadow.Image = "rbxassetid://1316045217"
+Shadow.ImageColor3 = Color3.fromRGB(0, 0, 0) -- Changed to black
+Shadow.ImageTransparency = 0.5 -- Made less transparent
+Shadow.ScaleType = Enum.ScaleType.Slice
+Shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+Shadow.ZIndex = -1
+Shadow.Parent = MainFrame
 
-	-- Close Button
-	local Exit = Instance.new("TextButton")
-	Exit.Name = "Exit"
-	Exit.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-	Exit.BorderSizePixel = 0
-	Exit.Position = UDim2.new(1, -30, 0, 5)
-	Exit.Size = UDim2.new(0, 20, 0, 20)
-	Exit.Font = Enum.Font.SciFi
-	Exit.Text = "X"
-	Exit.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Exit.TextSize = 14
-	Exit.Parent = Topbar
+CenterFrame(MainFrame)
 
-	local ExitCorner = Instance.new("UICorner")
-	ExitCorner.CornerRadius = UDim.new(0, 4)
-	ExitCorner.Parent = Exit
+-- Add corner rounding
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = MainFrame
 
-	-- Minimize Button
-	local minimize = Instance.new("TextButton")
-	minimize.Name = "minimize"
-	minimize.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-	minimize.BorderSizePixel = 0
-	minimize.Position = UDim2.new(1, -60, 0, 5)
-	minimize.Size = UDim2.new(0, 20, 0, 20)
-	minimize.Font = Enum.Font.SciFi
-	minimize.Text = "-"
-	minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
-	minimize.TextSize = 14
-	minimize.Parent = Topbar
+-- Add stroke to MainFrame
+local MainFrameStroke = Instance.new("UIStroke")
+MainFrameStroke.Color = Color3.fromRGB(255, 80, 80) -- Accent color
+MainFrameStroke.Thickness = 2
+MainFrameStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+MainFrameStroke.Parent = MainFrame
 
-	local MinimizeCorner = Instance.new("UICorner")
-	MinimizeCorner.CornerRadius = UDim.new(0, 4)
-	MinimizeCorner.Parent = minimize
+-- Title Bar with gradient and icon
+local TitleBar = Instance.new("Frame")
+TitleBar.Name = "TitleBar"
+TitleBar.Size = UDim2.new(1, 0, 0, 50)
+TitleBar.Position = UDim2.new(0, 0, 0, 0)
+TitleBar.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = MainFrame
 
-	-- Content Frame
-	local Frame_2 = Instance.new("Frame")
-	Frame_2.Name = "ContentFrame"
-	Frame_2.BackgroundTransparency = 1
-	Frame_2.Position = UDim2.new(0, 0, 0, 35)
-	Frame_2.Size = UDim2.new(1, 0, 1, -35)
-	Frame_2.Parent = Frame
+-- Title bar gradient
+local TitleGradient = Instance.new("UIGradient")
+TitleGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 0, 0)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(80, 0, 0))
+})
+TitleGradient.Parent = TitleBar
 
-	-- Key Input Box
-	local TextBox = Instance.new("TextBox")
-	TextBox.Name = "KeyInput"
-	TextBox.BackgroundColor3 = Color3.fromRGB(20, 0, 0)
-	TextBox.BackgroundTransparency = 0.7
-	TextBox.BorderSizePixel = 0
-	TextBox.Position = UDim2.new(0.1, 0, 0.1, 0)
-	TextBox.Size = UDim2.new(0.8, 0, 0, 40)
-	TextBox.Font = Enum.Font.SciFi
-	TextBox.PlaceholderText = "ENTER SPACE KEY..."
-	TextBox.PlaceholderColor3 = Color3.fromRGB(150, 50, 50)
-	TextBox.Text = ""
-	TextBox.TextColor3 = Color3.fromRGB(255, 100, 100)
-	TextBox.TextSize = 14
-	TextBox.Parent = Frame_2
+-- Add stroke to TitleBar
+local TitleBarStroke = Instance.new("UIStroke")
+TitleBarStroke.Color = Color3.fromRGB(200, 50, 50)
+TitleBarStroke.Thickness = 1
+TitleBarStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+TitleBarStroke.Parent = TitleBar
 
-	local TextBoxCorner = Instance.new("UICorner")
-	TextBoxCorner.CornerRadius = UDim.new(0, 4)
-	TextBoxCorner.Parent = TextBox
+-- Add icon before title
+local Icon = Instance.new("ImageLabel")
+Icon.Name = "Icon"
+Icon.Size = UDim2.new(0, 30, 0, 30)
+Icon.Position = UDim2.new(0, 10, 0.5, -15)
+Icon.BackgroundTransparency = 1
+Icon.Image = "rbxassetid://13852954720" -- Target icon
+Icon.Parent = TitleBar
 
-	local TextBoxPadding = Instance.new("UIPadding")
-	TextBoxPadding.PaddingLeft = UDim.new(0, 10)
-	TextBoxPadding.PaddingRight = UDim.new(0, 10)
-	TextBoxPadding.Parent = TextBox
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Size = UDim2.new(1, -60, 1, 0)
+Title.Position = UDim2.new(0, 50, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "TARGET HUB"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.Cartoon
+Title.TextSize = 20
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = TitleBar
 
-	-- Get Key Button
-	local Getkey = Instance.new("TextButton")
-	Getkey.Name = "Getkey"
-	Getkey.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
-	Getkey.BorderSizePixel = 0
-	Getkey.Position = UDim2.new(0.1, 0, 0.4, 0)
-	Getkey.Size = UDim2.new(0.8, 0, 0, 35)
-	Getkey.Font = Enum.Font.SciFi
-	Getkey.Text = "GET KEY LINK"
-	Getkey.TextColor3 = Color3.fromRGB(255, 150, 150)
-	Getkey.TextSize = 14
-	Getkey.Parent = Frame_2
+-- Add decorative particles to title bar
+local ParticleContainer = Instance.new("Frame")
+ParticleContainer.Name = "ParticleContainer"
+ParticleContainer.Size = UDim2.new(1, 0, 1, 0)
+ParticleContainer.BackgroundTransparency = 1
+ParticleContainer.Parent = TitleBar
 
-	local GetkeyCorner = Instance.new("UICorner")
-	GetkeyCorner.CornerRadius = UDim.new(0, 4)
-	GetkeyCorner.Parent = Getkey
+-- Create particles
+for i = 1, 12 do -- Increased particle count
+	local particle = Instance.new("Frame")
+	particle.Name = "Particle"..i
+	particle.Size = UDim2.new(0, 2, 0, 2)
+	particle.BackgroundColor3 = Color3.fromRGB(255, 100, 100) -- Brighter particle color
+	particle.BorderSizePixel = 0
+	particle.Position = UDim2.new(0, math.random(0, 500), 0, math.random(0, 50))
+	particle.Parent = ParticleContainer
 
-	-- Check Key Button
-	local Checkkey = Instance.new("TextButton")
-	Checkkey.Name = "Checkkey"
-	Checkkey.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-	Checkkey.BorderSizePixel = 0
-	Checkkey.Position = UDim2.new(0.1, 0, 0.6, 0)
-	Checkkey.Size = UDim2.new(0.8, 0, 0, 35)
-	Checkkey.Font = Enum.Font.SciFi
-	Checkkey.Text = "CHECK KEY"
-	Checkkey.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Checkkey.TextSize = 14
-	Checkkey.Parent = Frame_2
+	local particleCorner = Instance.new("UICorner")
+	particleCorner.CornerRadius = UDim.new(1, 0)
+	particleCorner.Parent = particle
 
-	local CheckkeyCorner = Instance.new("UICorner")
-	CheckkeyCorner.CornerRadius = UDim.new(0, 4)
-	CheckkeyCorner.Parent = Checkkey
+	-- Animate particles
+	spawn(function()
+		while particle.Parent do
+			local targetX = math.random(0, 500)
+			local targetY = math.random(0, 50)
+			local duration = math.random(3, 7)
 
-	-- Status Label (hidden by default)
-	local StatusLabel = Instance.new("TextLabel")
-	StatusLabel.Name = "StatusLabel"
-	StatusLabel.BackgroundTransparency = 1
-	StatusLabel.Position = UDim2.new(0.1, 0, 0.8, 0)
-	StatusLabel.Size = UDim2.new(0.8, 0, 0, 20)
-	StatusLabel.Font = Enum.Font.SciFi
-	StatusLabel.Text = ""
-	StatusLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
-	StatusLabel.TextSize = 12
-	StatusLabel.Visible = false
-	StatusLabel.Parent = Frame_2
+			TweenService:Create(particle, TweenInfo.new(duration), {
+				Position = UDim2.new(0, targetX, 0, targetY),
+				BackgroundTransparency = math.random(0, 50)/100
+			}):Play()
 
-	-- Draggable functionality
-	local UserInputService = game:GetService("UserInputService")
-	local dragging
-	local dragInput
-	local dragStart
-	local startPos
+			task.wait(duration) -- Changed wait to task.wait
+		end
+	end)
+end
 
-	local function update(input)
-		local delta = input.Position - dragStart
-		Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+-- Credits label with decorative line
+local CreditsLine = Instance.new("Frame")
+CreditsLine.Name = "CreditsLine"
+CreditsLine.Size = UDim2.new(0.99, -20, 0, 1)
+CreditsLine.Position = UDim2.new(0, 10, 1, -30)
+CreditsLine.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+CreditsLine.BorderSizePixel = 0
+CreditsLine.Parent = MainFrame
+
+local Credits = Instance.new("TextLabel")
+Credits.Name = "Credits"
+Credits.Size = UDim2.new(1, -10, 0.017, 20)
+Credits.Position = UDim2.new(0, 10, 1, -30)
+Credits.BackgroundTransparency = 1
+Credits.Text = "Target Hub - Premium Script Collection"
+Credits.TextColor3 = Color3.fromRGB(150, 150, 150)
+Credits.Font = Enum.Font.Cartoon
+Credits.TextSize = 12
+Credits.TextXAlignment = Enum.TextXAlignment.Left
+Credits.Parent = MainFrame
+
+-- Close button with icon
+local CloseButton = Instance.new("ImageButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0, 10)
+CloseButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+CloseButton.BorderSizePixel = 0
+CloseButton.Image = "rbxassetid://3926305904" -- Close icon
+CloseButton.ImageRectOffset = Vector2.new(284, 4)
+CloseButton.ImageRectSize = Vector2.new(24, 24)
+CloseButton.Parent = TitleBar
+
+-- Add corner rounding to close button
+local CloseButtonCorner = Instance.new("UICorner")
+CloseButtonCorner.CornerRadius = UDim.new(0, 6)
+CloseButtonCorner.Parent = CloseButton
+
+-- Make frame draggable
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function update(input)
+	local delta = input.Position - dragStart
+	MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+TitleBar.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = MainFrame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
 	end
+end)
 
-	Topbar.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging = true
-			dragStart = input.Position
-			startPos = Frame.Position
+TitleBar.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInput = input
+	end
+end)
 
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-				end
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		update(input)
+	end
+end)
+
+-- Close button animation
+CloseButton.MouseEnter:Connect(function()
+	TweenService:Create(CloseButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(200, 0, 0)}):Play()
+end)
+
+CloseButton.MouseLeave:Connect(function()
+	TweenService:Create(CloseButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(150, 0, 0)}):Play()
+end)
+
+CloseButton.MouseButton1Click:Connect(function()
+	local tween = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)})
+	tween:Play()
+	tween.Completed:Wait()
+	ScreenGui:Destroy()
+end)
+
+-- Script Categories
+local Categories = {"Admin", "Games", "Utility", "ESP", "Combat", "All"}
+
+-- Scrollable category buttons
+local CategoryButtonsContainer = Instance.new("Frame")
+CategoryButtonsContainer.Name = "CategoryButtonsContainer"
+CategoryButtonsContainer.Size = UDim2.new(1, -20, 0, 50)
+CategoryButtonsContainer.Position = UDim2.new(0, 10, 0, 60)
+CategoryButtonsContainer.BackgroundTransparency = 1
+CategoryButtonsContainer.Parent = MainFrame
+
+local CategoryButtons = Instance.new("ScrollingFrame")
+CategoryButtons.Name = "CategoryButtons"
+CategoryButtons.Size = UDim2.new(1, 0, 1, 0)
+CategoryButtons.BackgroundTransparency = 1
+CategoryButtons.ScrollBarThickness = 5
+CategoryButtons.CanvasSize = UDim2.new(0, 0, 0, 0)
+CategoryButtons.Parent = CategoryButtonsContainer
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout.Padding = UDim.new(0, 5)
+UIListLayout.Parent = CategoryButtons
+
+for _, category in Categories do -- Changed from ipairs
+	local button = Instance.new("TextButton")
+	button.Name = category
+	button.Size = UDim2.new(0, 80, 0, 40)
+	button.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
+	button.BorderSizePixel = 0
+	button.Text = category
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.Font = Enum.Font.Cartoon
+	button.TextSize = 14
+	button.Parent = CategoryButtons
+
+	-- Add corner rounding to buttons
+	local buttonCorner = Instance.new("UICorner")
+	buttonCorner.CornerRadius = UDim.new(0, 6)
+	buttonCorner.Parent = button
+
+	-- Add stroke to category buttons
+	local buttonStroke = Instance.new("UIStroke")
+	buttonStroke.Color = Color3.fromRGB(150, 50, 50)
+	buttonStroke.Thickness = 1
+	buttonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	buttonStroke.Parent = button
+
+	-- Button animations
+	button.MouseEnter:Connect(function()
+		TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(100, 0, 0)}):Play()
+	end)
+
+	button.MouseLeave:Connect(function()
+		TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 0, 0)}):Play()
+	end)
+
+	button.MouseButton1Click:Connect(function()
+		TweenService:Create(button, TweenInfo.new(0.1), {Size = UDim2.new(0, 75, 0, 38)}):Play()
+		TweenService:Create(button, TweenInfo.new(0.1), {Size = UDim2.new(0, 80, 0, 40)}):Play()
+	end)
+end
+
+-- Update category buttons canvas size
+CategoryButtons.CanvasSize = UDim2.new(0, (#Categories * 85) + ((#Categories - 1) * 5), 0, 0)
+
+-- Scripts Frame
+local ScriptsFrame = Instance.new("ScrollingFrame")
+ScriptsFrame.Name = "ScriptsFrame"
+ScriptsFrame.Size = UDim2.new(1, -20, 1, -150)
+ScriptsFrame.Position = UDim2.new(0, 10, 0, 120)
+ScriptsFrame.BackgroundTransparency = 1
+ScriptsFrame.ScrollBarThickness = 5
+ScriptsFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScriptsFrame.Parent = MainFrame
+
+local ScriptsListLayout = Instance.new("UIListLayout")
+ScriptsListLayout.Padding = UDim.new(0, 10)
+ScriptsListLayout.Parent = ScriptsFrame
+
+-- Official Scripts Database
+local OfficialScripts = {
+	{
+		Name = "Infinite Yield",
+		Category = "Admin",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()",
+		Description = "Most popular admin commands script"
+	},
+	{
+		Name = "Dark Dex",
+		Category = "Utility",
+		Loadstring = "loadstring(game:HttpGet('https://gist.githubusercontent.com/dannythehacker/1781582ab545302f2b34afc4ec53e811/raw/ee5324771f017073fc30e640323ac2a9b3bfc550/dark%2520dex%2520v4'))()",
+		Description = "Advanced explorer/decompiler"
+	},
+	{
+		Name = "SimpleSpy",
+		Category = "Utility",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua'))()",
+		Description = "Remote spy for debugging"
+	},
+	{
+		Name = "CMD-X",
+		Category = "Admin",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source'))()",
+		Description = "Alternative admin commands"
+	},
+	{
+		Name = "Hydroxide",
+		Category = "Utility",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Upbolt/Hydroxide/revision/UI.lua'))()",
+		Description = "Advanced exploit tool"
+	},
+	{
+		Name = "Troll Hub",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script'))()",
+		Description = "Troll Hub for trolling r15 only"
+	},
+	{
+		Name = "Dead rails script OP AUTO BOND FARM",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/m00ndiety/Keyless-auto-bonds/refs/heads/main/obfuscated%20(6).txt'))()",
+		Description = "This Auto Bonds Script gives you 80+ bonds per run — fully automated and keyless!"
+	},
+	{
+		Name = "Ro Ghoul",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/PorryDepTrai/exploit/main/DashBoostSolora.lua'))()",
+		Description = "Script for Ro ghoul"
+	},
+	{
+		Name = "Forge Hub",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Skzuppy/forge-hub/main/loader.lua'))()",
+		Description = "10+ GAMES, OP FEATURES, AUTOFARMS AND LOTS MORE!"
+	},
+	{
+		Name = "Arsenal",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Insertl/QuotasHub/main/BETAv1.3'))()",
+		Description = "Script for Arsenal"
+	},
+	{
+		Name = "Untitled Boxing",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/pid4k/scripts/main/BeanzHub.lua'))()",
+		Description = "Script for untitled Boxing"
+	},
+	{
+		Name = "Dead Rails",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/gumanba/Scripts/main/DeadRails'))()",
+		Description = "Script for Dead Rails"
+	},
+	{
+		Name = "Unnamed ESP",
+		Category = "ESP",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/ic3w0lf22/Unnamed-ESP/master/UnnamedESP.lua',true))()",
+		Description = "Feature-rich ESP script"
+	},
+	{
+		Name = "Universal Aimbot",
+		Category = "ESP",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Exunys/AirHub/main/AirHub.lua',true))()",
+		Description = "Universal Aimbot"
+	},
+	{
+		Name = "Vynixius",
+		Category = "Combat",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/RegularVynixu/Vynixius/main/Loader.lua'))()",
+		Description = "Combat utilities"
+	}
+}
+
+-- Function to display scripts
+local function DisplayScripts(category)
+	-- Clear previous scripts with animation
+	for _, child in ScriptsFrame:GetChildren() do -- Changed from ipairs
+		if child:IsA("Frame") then
+			local tween = TweenService:Create(child, TweenInfo.new(0.2), {BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 0)})
+			tween:Play()
+			tween.Completed:Connect(function()
+				child:Destroy()
 			end)
 		end
-	end)
-
-	Topbar.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-			dragInput = input
-		end
-	end)
-
-	UserInputService.InputChanged:Connect(function(input)
-		if input == dragInput and dragging then
-			update(input)
-		end
-	end)
-
-	-- Button functions
-	local function showStatus(message, color)
-		StatusLabel.Text = message
-		StatusLabel.TextColor3 = color or Color3.fromRGB(255, 50, 50)
-		StatusLabel.Visible = true
-		task.delay(3, function()
-			StatusLabel.Visible = false
-		end)
 	end
 
-	Exit.MouseButton1Down:Connect(function()
-		ScreenGui:Destroy()
-	end)
+	task.wait(0.2) -- Wait for fade out
 
-	minimize.MouseButton1Down:Connect(function()
-		Frame.Visible = not Frame.Visible
-	end)
+	-- Add matching scripts with animation
+	local count = 0
+	local totalHeight = 0
+	for _, scriptData in OfficialScripts do -- Changed from ipairs
+		if category == "All" or scriptData.Category == category then
+			count = count + 1
 
-	Getkey.MouseButton1Down:Connect(function()
-		setclipboard("https://rinku.pro/TargetKey")
-		showStatus("Key link copied to clipboard!", Color3.fromRGB(0, 255, 0))
-	end)
+			local scriptFrame = Instance.new("Frame")
+			scriptFrame.Name = "ScriptFrame"
+			scriptFrame.Size = UDim2.new(1, 0, 0, 0)
+			scriptFrame.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
+			scriptFrame.BorderSizePixel = 0
+			scriptFrame.ClipsDescendants = true
+			scriptFrame.Parent = ScriptsFrame
 
-	Checkkey.MouseButton1Down:Connect(function()
-		if TextBox.Text == "" then
-			showStatus("Please enter a key first", Color3.fromRGB(255, 50, 50))
-			return
+			-- Add corner rounding to script frames
+			local frameCorner = Instance.new("UICorner")
+			frameCorner.CornerRadius = UDim.new(0, 6)
+			frameCorner.Parent = scriptFrame
+
+			-- Add stroke to script frames
+			local scriptFrameStroke = Instance.new("UIStroke")
+			scriptFrameStroke.Color = Color3.fromRGB(80, 20, 20)
+			scriptFrameStroke.Thickness = 1
+			scriptFrameStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+			scriptFrameStroke.Parent = scriptFrame
+
+			local nameLabel = Instance.new("TextLabel")
+			nameLabel.Name = "Name"
+			nameLabel.Size = UDim2.new(1, -10, 0, 30)
+			nameLabel.Position = UDim2.new(0, 10, 0, 5)
+			nameLabel.BackgroundTransparency = 1
+			nameLabel.Text = scriptData.Name
+			nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+			nameLabel.Font = Enum.Font.Cartoon
+			nameLabel.TextSize = 18
+			nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+			nameLabel.Parent = scriptFrame
+
+			local descLabel = Instance.new("TextLabel")
+			descLabel.Name = "Description"
+			descLabel.Size = UDim2.new(1, -10, 0, 0)
+			descLabel.Position = UDim2.new(0, 10, 0, 35)
+			descLabel.BackgroundTransparency = 1
+			descLabel.Text = scriptData.Description
+			descLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+			descLabel.Font = Enum.Font.Cartoon
+			descLabel.TextSize = 14
+			descLabel.TextXAlignment = Enum.TextXAlignment.Left
+			descLabel.TextWrapped = true
+			descLabel.TextYAlignment = Enum.TextYAlignment.Top
+			descLabel.AutomaticSize = Enum.AutomaticSize.Y
+			descLabel.Parent = scriptFrame
+
+			local executeButton = Instance.new("TextButton")
+			executeButton.Name = "ExecuteButton"
+			executeButton.Size = UDim2.new(0, 120, 0, 30)
+			executeButton.Position = UDim2.new(1, -130, 0, 70)
+			executeButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+			executeButton.BorderSizePixel = 0
+			executeButton.Text = "EXECUTE SCRIPT"
+			executeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+			executeButton.Font = Enum.Font.Cartoon
+			executeButton.TextSize = 14
+			executeButton.Parent = scriptFrame
+
+			-- Add corner rounding to execute button
+			local buttonCorner = Instance.new("UICorner")
+			buttonCorner.CornerRadius = UDim.new(0, 6)
+			buttonCorner.Parent = executeButton
+
+			-- Wait for description to calculate its size
+			descLabel:GetPropertyChangedSignal("TextBounds"):Wait()
+
+			-- Calculate final frame height (minimum 100px)
+			local frameHeight = math.max(100, 75 + descLabel.TextBounds.Y)
+
+			-- Position execute button at bottom
+			executeButton.Position = UDim2.new(1, -130, 0, frameHeight - 35)
+
+			-- Update total height for canvas calculation
+			totalHeight = totalHeight + frameHeight + 10
+
+			-- Button animations
+			executeButton.MouseEnter:Connect(function()
+				TweenService:Create(executeButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(200, 0, 0)}):Play()
+			end)
+
+			executeButton.MouseLeave:Connect(function()
+				TweenService:Create(executeButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(150, 0, 0)}):Play()
+			end)
+
+			executeButton.MouseButton1Down:Connect(function()
+				TweenService:Create(executeButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 115, 0, 28)}):Play()
+			end)
+
+			executeButton.MouseButton1Up:Connect(function()
+				TweenService:Create(executeButton, TweenInfo.new(0.1), {Size = UDim2.new(0, 120, 0, 30)}):Play()
+			end)
+
+			executeButton.MouseButton1Click:Connect(function()
+				executeButton.Text = "EXECUTING..."
+				local success, err = pcall(function()
+					loadstring(scriptData.Loadstring)()
+				end)
+
+				if success then
+					executeButton.Text = "EXECUTED!"
+					task.wait(1)
+					executeButton.Text = "EXECUTE SCRIPT"
+				else
+					executeButton.Text = "ERROR!"
+					warn("Script execution failed: " .. err)
+					task.wait(1)
+					executeButton.Text = "EXECUTE SCRIPT"
+				end
+			end)
+
+			-- Animate frame in with calculated height
+			TweenService:Create(scriptFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back), {Size = UDim2.new(1, 0, 0, frameHeight)}):Play()
 		end
-
-		if TextBox.Text == "Key-26blovelsihhlao" then
-			showStatus("KEY ACCEPTED - WELCOME!", Color3.fromRGB(0, 255, 0))
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/TargetHubLoader/TargetLoader/refs/heads/main/TargetHub", true))()
-		else
-			showStatus("INCORRECT KEY - TRY AGAIN", Color3.fromRGB(255, 50, 50))
-		end
-	end)
-
-	-- Hover effects for buttons
-	local function setupButtonHover(button)
-		local originalColor = button.BackgroundColor3
-
-		button.MouseEnter:Connect(function()
-			button.BackgroundColor3 = originalColor * 1.5
-		end)
-
-		button.MouseLeave:Connect(function()
-			button.BackgroundColor3 = originalColor
-		end)
 	end
 
-	setupButtonHover(Exit)
-	setupButtonHover(minimize)
-	setupButtonHover(Getkey)
-	setupButtonHover(Checkkey)
-end)
+	-- Update canvas size after all frames are added
+	ScriptsFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+end
+
+-- Connect category buttons
+for _, button in CategoryButtons:GetChildren() do -- Changed from ipairs
+	if button:IsA("TextButton") then
+		button.MouseButton1Click:Connect(function()
+			DisplayScripts(button.Name)
+		end)
+	end
+end
+
+MainFrame.Size = UDim2.new(0, 0, 0, 0)
+CenterFrame(MainFrame)
+TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back), {Size = UDim2.new(0, 500, 0, 600)}):Play()
+
+-- Show all scripts by default
+task.wait(0.5)
+DisplayScripts("All")
