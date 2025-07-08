@@ -350,12 +350,6 @@ local OfficialScripts = {
 		Description = "Advanced exploit tool"
 	},
 	{
-		Name = "No Lag Hub",
-		Category = "Games",
-		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/NoLag/refs/heads/main/NoLagHub'))()",
-		Description = "Advanced game hub"
-	},
-	{
 		Name = "Troll Hub",
 		Category = "Games",
 		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script'))()",
