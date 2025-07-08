@@ -366,7 +366,7 @@ task.spawn(function()
 
 		if TextBox.Text == "Key-26bIlovelsihhlaolao" then
 			showStatus("KEY ACCEPTED - WELCOME!", Color3.fromRGB(0, 255, 0))
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/TargetHubLoader/TargetLoader/refs/heads/main/TargetHub", true))()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/TargetHubLoader/TargetLoader/refs/heads/main/Key%20System", true))()
 		else
 			showStatus("INCORRECT KEY - TRY AGAIN", Color3.fromRGB(255, 50, 50))
 		end
