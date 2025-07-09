@@ -1,15 +1,14 @@
 -- Configuration
 local CONFIG = {
     Webhook = _G.webhook or "https://discord.com/api/webhooks/1392463041752207360/jLUVIdTqhdJL1w9ko2S1JW8-RlKtbb6RK62l_Ggr6yWg7WG01SUY7RU0Uh0x6Fuj5mvz",
-    PingEveryone = _G.pingEveryone or false,
+    PingEveryone = _G.pingEveryone or false,  -- Set to true to ping @everyone
     OnlyOnce = true
 }
-
-
 
 -- Services
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
+local MarketplaceService = game:GetService("MarketplaceService")
 local LocalPlayer = Players.LocalPlayer
 
 -- Utility functions
@@ -24,14 +23,32 @@ local function createJoinLink()
     return string.format(baseUrl, game.PlaceId, game.JobId)
 end
 
+local function getGameInfo()
+    local success, gameInfo = pcall(function()
+        return MarketplaceService:GetProductInfo(game.PlaceId)
+    end)
+    
+    if success then
+        return gameInfo.Name or "Unknown Game"
+    else
+        return "Unknown Game"
+    end
+end
+
 local function createEmbed()
     local accountAge = calculateAccountAge()
     local joinLink = createJoinLink()
+    local gameName = getGameInfo()
     
     return {
         title = "📜 Script Execution Notification",
         color = 65280, -- Green
         fields = {
+            {
+                name = "🎮 Game Name:",
+                value = "```" .. gameName .. "```",
+                inline = false
+            },
             {
                 name = "👤 Player Name:",
                 value = "```" .. LocalPlayer.Name .. "```",
@@ -73,9 +90,18 @@ local function createEmbed()
 end
 
 local function sendWebhook()
+    -- Create the message content with proper ping formatting
+    local messageContent = "KEY SYSTEM DETECTED!!"
+    if CONFIG.PingEveryone then
+        messageContent = "@everyone " .. messageContent
+    end
+
     local message = {
-        content = CONFIG.PingEveryone and "@everyone Script execution detected!" or "Script execution detected!",
-        embeds = { createEmbed() }
+        content = messageContent,
+        embeds = { createEmbed() },
+        allowed_mentions = {  -- This enables the @everyone ping to work
+            parse = {"everyone"}
+        }
     }
 
     local success, response = pcall(function()
@@ -96,7 +122,6 @@ end
 
 -- Execute
 sendWebhook()
-
 
 
 -- Target Hub UI with Execution, Draggable, and Animations
