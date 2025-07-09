@@ -488,6 +488,12 @@ local OfficialScripts = {
 		Description = "This Auto Bonds Script gives you 80+ bonds per run — fully automated and keyless!"
 	},
 	{
+		Name = "Gloomies Hub (Slap Tower 2)",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/gloooomie/GloomieHub/refs/heads/main/loader'))()",
+		Description = "This Auto Bonds Script gives you 80+ bonds per run — fully automated and keyless!"
+	},
+	{
 		Name = "Ro Ghoul",
 		Category = "Games",
 		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/PorryDepTrai/exploit/main/DashBoostSolora.lua'))()",
