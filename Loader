@@ -5,11 +5,10 @@ local CONFIG = {
     OnlyOnce = true
 }
 
-
-
 -- Services
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
+local MarketplaceService = game:GetService("MarketplaceService")
 local LocalPlayer = Players.LocalPlayer
 
 -- Utility functions
@@ -24,14 +23,32 @@ local function createJoinLink()
     return string.format(baseUrl, game.PlaceId, game.JobId)
 end
 
+local function getGameInfo()
+    local success, gameInfo = pcall(function()
+        return MarketplaceService:GetProductInfo(game.PlaceId)
+    end)
+    
+    if success then
+        return gameInfo.Name or "Unknown Game"
+    else
+        return "Unknown Game"
+    end
+end
+
 local function createEmbed()
     local accountAge = calculateAccountAge()
     local joinLink = createJoinLink()
+    local gameName = getGameInfo()
     
     return {
         title = "📜 Script Execution Notification",
         color = 65280, -- Green
         fields = {
+            {
+                name = "🎮 Game Name:",
+                value = "```" .. gameName .. "```",
+                inline = false
+            },
             {
                 name = "👤 Player Name:",
                 value = "```" .. LocalPlayer.Name .. "```",
