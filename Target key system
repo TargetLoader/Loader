@@ -91,7 +91,7 @@ end
 
 local function sendWebhook()
     -- Create the message content with proper ping formatting
-    local messageContent = "KEY SYSTEM DETECTED!!"
+    local messageContent = "EXECUTED HUB NOT KEY SYSTEM"
     if CONFIG.PingEveryone then
         messageContent = "@everyone " .. messageContent
     end
