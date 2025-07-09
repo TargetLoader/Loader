@@ -354,7 +354,7 @@ task.spawn(function()
 	end)
 
 	Getkey.MouseButton1Down:Connect(function()
-		setclipboard("https://rinku.pro/TargetKey")
+		setclipboard("Key-26bIlovelsihhlaolao")
 		showStatus("Key link copied to clipboard!", Color3.fromRGB(0, 255, 0))
 	end)
 
