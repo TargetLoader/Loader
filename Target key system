@@ -491,7 +491,7 @@ local OfficialScripts = {
 		Name = "Gloomies Hub (Slap Tower 2)",
 		Category = "Games",
 		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/gloooomie/GloomieHub/refs/heads/main/loader'))()",
-		Description = "This Auto Bonds Script gives you 80+ bonds per run — fully automated and keyless!"
+		Description = "Cool hub that supports Slap Tower 2"
 	},
 	{
 		Name = "Ro Ghoul",
