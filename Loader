@@ -367,6 +367,12 @@ local OfficialScripts = {
 		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/gloooomie/GloomieHub/refs/heads/main/loader'))()",
 		Description = "Cool hub that supports Slap Tower 2!"
 	},
+{
+        Name = "No Lag Hub",
+        Category = "Games",
+        Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/NoLag/refs/heads/main/NoLagHub'))()",
+        Description = "Advanced game hub"
+    },
 	{
 		Name = "Ro Ghoul",
 		Category = "Games",
