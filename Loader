@@ -379,17 +379,17 @@ local OfficialScripts = {
         Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/Nolagv2/refs/heads/main/Nolag'))()",
         Description = "Advanced game hub"
     },
-{
-        Name = "MM2,
-        Category = "Games",
-        Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/Nolagv2/refs/heads/main/Nolag'))()",
-        Description = "jst average mm2"
-    },
 	{
 		Name = "Forge Hub",
 		Category = "Games",
 		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Skzuppy/forge-hub/main/loader.lua'))()",
 		Description = "10+ GAMES, OP FEATURES, AUTOFARMS AND LOTS MORE!"
+	},
+	{
+		Name = "Avg MM2 script",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/Nolagv2/refs/heads/main/Nolag'))()",
+		Description = "avg mm2 script"
 	},
 	{
 		Name = "Arsenal",
