@@ -386,10 +386,10 @@ local OfficialScripts = {
 		Description = "10+ GAMES, OP FEATURES, AUTOFARMS AND LOTS MORE!"
 	},
 	{
-		Name = "Avg MM2 script",
+		Name = "error",
 		Category = "Games",
-		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/Nolagv2/refs/heads/main/Nolag'))()",
-		Description = "avg mm2 script"
+		Loadstring = "0",
+		Description = "dont mind this script"
 	},
 	{
 		Name = "Arsenal",
