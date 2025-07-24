@@ -386,6 +386,12 @@ local OfficialScripts = {
 		Description = "10+ GAMES, OP FEATURES, AUTOFARMS AND LOTS MORE!"
 	},
 	{
+		Name = "ass mm2 script",
+		Category = "Games",
+		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/Nolagv2/refs/heads/main/Nolag'))()",
+		Description = "shitty script for mm2"
+	},
+	{
 		Name = "error",
 		Category = "Games",
 		Loadstring = "0",
