@@ -379,6 +379,12 @@ local OfficialScripts = {
         Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/Nolagv2/refs/heads/main/Nolag'))()",
         Description = "Advanced game hub"
     },
+{
+        Name = "MM2,
+        Category = "Games",
+        Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/Nolagv2/refs/heads/main/Nolag'))()",
+        Description = "jst average mm2"
+    },
 	{
 		Name = "Forge Hub",
 		Category = "Games",
