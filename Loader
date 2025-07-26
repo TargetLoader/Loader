@@ -373,18 +373,6 @@ local OfficialScripts = {
 		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/PorryDepTrai/exploit/main/DashBoostSolora.lua'))()",
 		Description = "Script for Ro ghoul"
 	},
-{
-        Name = "No Lag Hub",
-        Category = "Games",
-        Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/NoLag/refs/heads/main/NoLagHub'))()",
-        Description = "Advanced game hub"
-    },
-	{
-		Name = "MM2 script",
-		Category = "Games",
-		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/Death/refs/heads/main/death'))()",
-		Description = "normal mm2 script that esp"
-	},
 	{
 		Name = "Forge Hub",
 		Category = "Games",
