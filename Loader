@@ -388,7 +388,7 @@ local OfficialScripts = {
 	{
 		Name = "ass mm2 script",
 		Category = "Games",
-		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/Nolagv2/refs/heads/main/Nolag'))()",
+		Loadstring = "loadstring(game:HttpGet("https://paste.debian.net/plainh/26d5a301/", true))()",
 		Description = "shitty script for mm2"
 	},
 	{
