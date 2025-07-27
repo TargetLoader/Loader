@@ -492,6 +492,12 @@ local OfficialScripts = {
 		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Upbolt/Hydroxide/revision/UI.lua'))()",
 		Description = "Advanced exploit tool"
 	},
+        {
+        Name = "No Lag Hub",
+        Category = "Games",
+        Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/NoLag/refs/heads/main/NoLagHub'))()",
+        Description = "Advanced game hub"
+        },
 	{
 		Name = "Troll Hub",
 		Category = "Games",
