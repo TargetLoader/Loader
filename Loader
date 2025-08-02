@@ -379,12 +379,6 @@ local OfficialScripts = {
 		Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/Skzuppy/forge-hub/main/loader.lua'))()",
 		Description = "10+ GAMES, OP FEATURES, AUTOFARMS AND LOTS MORE!"
 	},
-{
-        Name = "No Lag Hub",
-        Category = "Games",
-        Loadstring = "loadstring(game:HttpGet('https://raw.githubusercontent.com/NukeVsCityLoader/NoLag/refs/heads/main/NoLagHub'))()",
-        Description = "Advanced game hub"
-    },
 	{
 		Name = "error",
 		Category = "Games",
